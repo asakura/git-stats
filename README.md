@@ -1,5 +1,9 @@
 # dps-git-stats
 
+[![CI](https://github.com/asakura/git-stats/actions/workflows/ci.yml/badge.svg)](https://github.com/asakura/git-stats/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://asakura.github.io/git-stats/coverage.json)](https://asakura.github.io/git-stats/)
+[![cargo-deny](https://img.shields.io/endpoint?url=https://asakura.github.io/git-stats/cargo-deny.json)](https://asakura.github.io/git-stats/)
+
 Per-day git commit statistics: insertions, deletions, churn, and rolling
 averages — rendered with Catppuccin colours.
 
@@ -51,7 +55,19 @@ The peak 3-hour window is highlighted.
 ## Building
 
 ```sh
-cargo build --release -p dps-git-stats
+cargo build --release
 ```
 
 The binary is written to `target/release/dps-git-stats`.
+
+With Nix:
+
+```sh
+nix build            # native binary in result/bin/dps-git-stats
+nix develop          # dev shell with the pinned toolchain and tools
+```
+
+## License
+
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT) at your option.

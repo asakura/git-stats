@@ -1,0 +1,3 @@
+profile = "mutants"
+cap_lints = true
+test_tool = "nextest"

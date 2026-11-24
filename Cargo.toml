@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Mikalai Seva"]
 description = "Per-day git commit statistics: insertions, deletions, churn, rolling averages"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/asakura/dps"
+repository = "https://github.com/asakura/git-stats"
 readme = "README.md"
 keywords = ["git", "statistics", "productivity", "cli"]
 categories = ["command-line-utilities", "development-tools"]
@@ -14,23 +14,114 @@ categories = ["command-line-utilities", "development-tools"]
 name = "dps-git-stats"
 path = "src/main.rs"
 
-[lints]
-workspace = true
-
 [dependencies]
-anstream.workspace = true
-anstyle.workspace = true
-catppuccin.workspace = true
-thiserror.workspace = true
-
-[dependencies.clap]
-workspace = true
-
-[dependencies.gix]
-workspace = true
-
-[dependencies.polars]
-workspace = true
+anstream = { version = "1.0", default-features = false, features = ["auto"] }
+anstyle = { version = "1.0", default-features = false }
+catppuccin = { version = "2.8", default-features = false }
+clap = { version = "4.6", default-features = false, features = [
+    "derive",
+    "error-context",
+    "help",
+    "std",
+    "usage",
+] }
+gix = { version = "0.90", default-features = false, features = [
+    "blob-diff",
+    "revision",
+    "sha1",
+] }
+polars = { version = "0.55", default-features = false, features = [
+    "cum_agg",
+    "dtype-date",
+    "lazy",
+    "round_series",
+    "temporal",
+] }
+thiserror = { version = "2.0", default-features = false }
 
 [dev-dependencies]
-rstest.workspace = true
+rstest = { version = "0.28", default-features = false }
+
+[lints.rust]
+# Safety — forbid means even #![allow(...)] can't override
+unsafe_code = "forbid"
+non_ascii_idents = "forbid"
+
+# Quality enforcement
+warnings = "deny"
+rust_2018_idioms = { level = "deny", priority = -1 }
+future_incompatible = { level = "deny", priority = -1 }
+nonstandard_style = { level = "deny", priority = -1 }
+
+# Documentation enforcement
+missing_docs = "deny"
+missing_debug_implementations = "deny"
+missing_copy_implementations = "deny"
+unfulfilled_lint_expectations = "deny"
+
+[lints.rustdoc]
+all = { level = "deny", priority = -1 }
+
+[lints.clippy]
+# All lint groups
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+cargo = { level = "deny", priority = -1 }
+
+# Guardrails
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+panic_in_result_fn = "deny"
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
+
+# Code hygiene
+dbg_macro = "deny"
+todo = "deny"
+unimplemented = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+
+# Async safety
+await_holding_lock = "deny"
+large_futures = "deny"
+
+# Process and memory safety
+exit = "deny"
+mem_forget = "deny"
+
+# Performance
+large_stack_arrays = "deny"
+large_types_passed_by_value = "deny"
+
+# Minimal relaxations
+multiple_crate_versions = "allow"   # unavoidable with transitive deps
+
+# Cast lints — too many false positives even for strict projects
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_precision_loss = "allow"
+cast_possible_wrap = "allow"
+
+# Nursery lints that have too many false positives
+cognitive_complexity = "allow"      # use clippy.toml threshold instead
+
+[profile.dev]
+debug = 1
+
+[profile.test]
+debug = 1
+split-debuginfo = "unpacked"
+
+[profile.mutants]
+inherits = "test"
+debug = "none"
+opt-level = 0
+
+[profile.release]
+lto = "thin"
+opt-level = 3
+panic = "abort"
+strip = "symbols"

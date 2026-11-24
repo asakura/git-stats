@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: asakura/actions/.github/actions/setup-nix@32fd43107b80ca9d29152b5d32d4bb61e8723527 # v1.0.0
+        with:
+          github-token: ${{ github.token }}
+
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      # Run all cargo checks outside the sandbox to share the rust-cache
+      - name: cargo fmt
+        run: nix develop -c cargo fmt --check
+
+      - name: cargo clippy
+        run: nix develop -c cargo clippy --workspace --all-targets -- -D warnings
+
+      # Runs outside the sandbox (network + .git access) inside the pinned devShell.
+      - name: cargo test --workspace
+        run: nix develop -c cargo test --workspace
+
+      - name: cargo deny check
+        run: nix develop -c cargo deny check
