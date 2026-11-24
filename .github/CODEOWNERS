@@ -28,4 +28,3 @@ Cargo.toml              @asakura
 
 # Source.
 /src/                   @asakura
-/git-stats-per-day.sh   @asakura
