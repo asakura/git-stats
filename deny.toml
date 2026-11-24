@@ -21,23 +21,12 @@ yanked = "warn"
 maximum-db-staleness = "P30D"
 unused-ignored-advisory = "warn"
 
-# All of these are transitive via `polars` and `gix`. Vetted as acceptable
+# All of these are transitive via `polars`. Vetted as acceptable
 # until upstream bumps or replaces the affected crates.
 ignore = [
     # Unmaintained, pulled in by `polars-arrow`.
     { id = "RUSTSEC-2026-0543", reason = "chrono unmaintained; transitive via polars-arrow/chrono-tz" },
     { id = "RUSTSEC-2026-0555", reason = "chrono-tz unmaintained; transitive via polars-arrow" },
-    # `heapless` 0.8.0 unsoundness, pulled in by `faster-hex` 0.10 (via
-    # `gix-hash`).
-    { id = "RUSTSEC-2026-0574", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0575", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0576", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0577", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0578", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0579", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0580", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0581", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
-    { id = "RUSTSEC-2026-0582", reason = "heapless unsound; transitive via faster-hex/gix-hash" },
 ]
 
 # https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
@@ -46,7 +35,6 @@ allow = [
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
     "BSD-2-Clause",
-    "BSD-3-Clause",
     "BSL-1.0",
     # allowed, but no matching crates yet
     # "CC0-1.0",
@@ -73,15 +61,11 @@ external-default-features = "allow"
 # entry skips that older version so `multiple-versions` stays quiet for this
 # known pair and would only fire again if a *third* version showed up.
 
-# 0.14.5 is pinned by `dashmap`, 0.15.5 by `planus` (via `polars`), and
-# 0.16.1 by `clru` (via `gix-pack`); `gix-hashtable` is on the newest, 0.17.2.
+# 0.14.5 is pinned by `dashmap` and 0.16.1 by `clru` (via `gix-pack`);
+# `gix-hashtable` and `polars-*` are on the newest, 0.17.2.
 [[bans.skip]]
 name = "hashbrown"
 version = "0.14.5"
-
-[[bans.skip]]
-name = "hashbrown"
-version = "0.15.5"
 
 [[bans.skip]]
 name = "hashbrown"
@@ -92,22 +76,19 @@ version = "0.16.1"
 name = "syn"
 version = "3.0.3"
 
-# 0.10.1 is pinned by `gix-hash`; `gix-packetline` is on 2.0.0.
+# 0.12.x / 0.9.x / 0.4.x are used by `polars` and `dashmap`; gix 0.91
+# moved to `parking_lot` 0.13 / `parking_lot_core` 0.10 / `lock_api` 0.5.
 [[bans.skip]]
-name = "faster-hex"
-version = "0.10.1"
+name = "lock_api"
+version = "0.4.14"
 
-# 0.1.5 is pinned by `hashbrown` 0.15.5; newer `hashbrown` and
-# `polars-utils` are on 0.2.0.
 [[bans.skip]]
-name = "foldhash"
-version = "0.1.5"
+name = "parking_lot"
+version = "0.12.5"
 
-# 0.3.4 is pinned by `tempfile` (via `gix-odb`/`gix-tempfile`); `gix-utils`,
-# `polars-core`, `rand` and `uuid` are on 0.4.3.
 [[bans.skip]]
-name = "getrandom"
-version = "0.3.4"
+name = "parking_lot_core"
+version = "0.9.12"
 
 [bans.build]
 include-workspace = false
